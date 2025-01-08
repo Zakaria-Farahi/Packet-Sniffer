@@ -12,7 +12,8 @@ public class Test {
     public static void main(String[] args) {
         try {
             PacketCapture packetCapture = new PacketCapture();
-            SynFlood packetFilter = new SynFlood();
+            AlertHandler alertHandler = new AlertHandler();
+            SynFlood synFlood = new SynFlood(alertHandler);  // Passez l'alertHandler en argument
             Scanner scanner = new Scanner(System.in);
             List<Packet> capturedPackets = new ArrayList<>();
 
@@ -66,7 +67,7 @@ public class Test {
                                         synchronized (capturedPackets) {
                                             capturedPackets.add(packet);
                                         }
-                                        packetFilter.filterAndAnalyze(packet, new AlertHandler()); // Utilisation de filterAndAnalyze
+                                        synFlood.filterAndAnalyze(packet); // Utilisation de filterAndAnalyze
                                     });
                                 } catch (Exception e) {
                                     System.err.println("Erreur lors de la capture : " + e.getMessage());
@@ -92,10 +93,10 @@ public class Test {
                         displayCapturedPackets(capturedPackets);
                         break;
                     case 4:
-                        packetFilter.displayUnansweredSYN();
+                        //synFlood.displayUnansweredSYN();
                         break;
                     case 5:
-                        packetFilter.detectSYNFlood(new HashMap<>(), new AlertHandler()); // Vérification des attaques SYN Flood
+                        //synFlood.detectSYNFlood(new HashMap<>(), new AlertHandler()); // Vérification des attaques SYN Flood
                         break;
                     case 6:
                         if (capturing) {
