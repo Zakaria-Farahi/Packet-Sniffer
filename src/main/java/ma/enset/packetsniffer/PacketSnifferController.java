@@ -78,24 +78,45 @@ public class PacketSnifferController {
     @FXML
     private Tab activeUsersTab;
 
+    @FXML
+    private TableView<Alerte> alertTable;
 
+    @FXML
+    private TableColumn<Alerte, Integer> colNum;
+
+    @FXML
+    private TableColumn<Alerte, String> colDate;
+
+    @FXML
+    private TableColumn<Alerte, String> colTitle;
+
+    @FXML
+    private TableColumn<Alerte, String> colMessage;
+
+    private final AlertHandler alertHandler = new AlertHandler();
     private final PacketCapture packetCapture = new PacketCapture();
     private final ObservableList<PacketData> packetList = FXCollections.observableArrayList();
     private final ObservableList<ActiveUser> activeUsersList = FXCollections.observableArrayList();
     private final Map<String, ActiveUser> activeUsersMap = new HashMap<>();
     private int packetCounter = 0;
 
+    private SynFlood synFloodDetector;
+
     @FXML
     public void initialize() {
         try {
+            // Charger les interfaces réseau
             List<PcapNetworkInterface> interfaces = packetCapture.getAllInterfaces();
             interfaceChoiceBox.setItems(FXCollections.observableArrayList(interfaces));
         } catch (Exception e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Error loading interfaces: " + e.getMessage());
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Erreur lors du chargement des interfaces : " + e.getMessage());
             alert.showAndWait();
         }
 
-        // Configure packet table
+        // Initialisation de SynFlood
+        synFloodDetector = new SynFlood(alertHandler);
+
+        // Configurer la table des paquets
         colNumber.setCellValueFactory(data -> data.getValue().numberProperty().asObject());
         colTime.setCellValueFactory(data -> data.getValue().timeProperty());
         colSrcIP.setCellValueFactory(data -> data.getValue().srcIPProperty());
@@ -105,28 +126,32 @@ public class PacketSnifferController {
 
         packetTableView.setItems(packetList);
 
-        // Configure active users table
+        // Configurer la table des utilisateurs actifs
         colMacAddress.setCellValueFactory(new PropertyValueFactory<>("macAddress"));
         colIsActive.setCellValueFactory(new PropertyValueFactory<>("active"));
+        activeUserTableView.setItems(activeUsersList);
 
-        // Handle Alerts Button
+        // Configurer la table des alertes
+        colNum.setCellValueFactory(new PropertyValueFactory<>("num"));
+        colDate.setCellValueFactory(new PropertyValueFactory<>("date"));
+        colTitle.setCellValueFactory(new PropertyValueFactory<>("title"));
+        colMessage.setCellValueFactory(new PropertyValueFactory<>("message"));
+
+        // Lier les données des alertes
+        alertTable.setItems(alertHandler.getAlertList());
+
+        // Gérer le bouton pour afficher l'onglet des alertes
         alertsButton.setOnAction(event -> mainTabPane.getSelectionModel().select(alertsTab));
 
-        // Handle Sniffer Button
+        // Gérer le bouton pour afficher l'onglet du sniffer
         snifferButton.setOnAction(event -> mainTabPane.getSelectionModel().select(snifferTab));
 
-        // Handle Active Users Button
+        // Gérer le bouton pour afficher l'onglet des utilisateurs actifs
         activeUsersButton.setOnAction(event -> mainTabPane.getSelectionModel().select(activeUsersTab));
-
-        activeUserTableView.setItems(activeUsersList);
     }
-
 
     @FXML
     private void startCapture() {
-        SynFlood packetFilter = new SynFlood();
-        AlertHandler synFloodAlert=new AlertHandler();
-
         PcapNetworkInterface selectedInterface = interfaceChoiceBox.getValue();
         if (selectedInterface == null) {
             Alert alert = new Alert(Alert.AlertType.ERROR, "Please select a network interface.");
@@ -141,7 +166,8 @@ public class PacketSnifferController {
                 PacketData data = PacketData.fromPacket(++packetCounter, packet);
                 packetList.add(data);
 
-                packetFilter.filterAndAnalyze(packet, synFloodAlert); // Utilisation de filterAndAnalyze
+                // Analyse du paquet et détection SYN Flood
+                synFloodDetector.filterAndAnalyze(packet);
 
                 updateActiveUsers(packet);
             });
@@ -183,15 +209,14 @@ public class PacketSnifferController {
             return "00:00:00:00:00:00";
         }
         try {
-            // Check if it's an Ethernet packet
             if (packet.contains(org.pcap4j.packet.EthernetPacket.class)) {
                 org.pcap4j.packet.EthernetPacket ethernetPacket = packet.get(org.pcap4j.packet.EthernetPacket.class);
-                return ethernetPacket.getHeader().getSrcAddr().toString(); // Extract source MAC address
+                return ethernetPacket.getHeader().getSrcAddr().toString();
             }
         } catch (Exception e) {
             System.err.println("Error extracting MAC address: " + e.getMessage());
         }
-        return "00:00:00:00:00:00"; // Fallback for non-Ethernet packets
+        return "00:00:00:00:00:00";
     }
 
     private void blockUser(String macAddress) {
@@ -201,12 +226,10 @@ public class PacketSnifferController {
             return;
         }
 
-        // Simulated blocking logic
+        // Logique simulée de blocage
         Alert alert = new Alert(Alert.AlertType.INFORMATION, "User with MAC Address " + macAddress + " has been blocked.");
         alert.showAndWait();
 
-        // TODO: Implement the real blocking logic, e.g., adding the MAC to a blacklist or network filtering.
         System.out.println("Blocking user with MAC: " + macAddress);
     }
-
 }

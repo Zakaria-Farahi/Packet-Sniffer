@@ -1,31 +1,25 @@
 package ma.enset.packetsniffer;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class AlertHandler {
+    private final ObservableList<Alerte> alertList = FXCollections.observableArrayList();
+    private int alertCounter = 1;
 
+    public ObservableList<Alerte> getAlertList() {
+        return alertList;
+    }
 
-    private String title;
-    private String message;
     public void triggerAlert(String title, String message) {
-        // Print alert to console (can be expanded for more complex alert handling)
-        this.title=title;
-        this.message=message;
+        // Format date
+        String date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
 
-        // Optionally, you could trigger a GUI alert here or log the event
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
+        // Ajouter l'alerte à la liste observable
+        alertList.add(new Alerte(alertCounter++, date, title, message));
+        System.out.println("Alerte détectée : " + title + " - " + message);
     }
 }
