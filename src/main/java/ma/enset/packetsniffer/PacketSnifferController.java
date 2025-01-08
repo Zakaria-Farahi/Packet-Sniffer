@@ -121,8 +121,12 @@ public class PacketSnifferController {
         activeUserTableView.setItems(activeUsersList);
     }
 
+
     @FXML
     private void startCapture() {
+        SynFlood packetFilter = new SynFlood();
+        AlertHandler synFloodAlert=new AlertHandler();
+
         PcapNetworkInterface selectedInterface = interfaceChoiceBox.getValue();
         if (selectedInterface == null) {
             Alert alert = new Alert(Alert.AlertType.ERROR, "Please select a network interface.");
@@ -136,6 +140,9 @@ public class PacketSnifferController {
             packetCapture.startCapture(packet -> {
                 PacketData data = PacketData.fromPacket(++packetCounter, packet);
                 packetList.add(data);
+
+                packetFilter.filterAndAnalyze(packet, synFloodAlert); // Utilisation de filterAndAnalyze
+
                 updateActiveUsers(packet);
             });
         } catch (Exception e) {

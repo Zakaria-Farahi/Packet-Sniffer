@@ -86,4 +86,3 @@ public class PacketData {
                 info.get().toLowerCase().contains(searchText);
     }
 }
-

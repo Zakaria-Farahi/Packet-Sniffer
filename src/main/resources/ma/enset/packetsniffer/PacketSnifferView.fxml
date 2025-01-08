@@ -156,8 +156,18 @@
                     <content>
                         <VBox spacing="10">
                             <padding>
-                                <Insets top="10" right="10" bottom="10" left="10"/>
+                                <Insets bottom="10" left="10" right="10" top="10" />
                             </padding>
+                            <children>
+                                <TableView fx:id="alertTable" prefHeight="564.0" prefWidth="780.0">
+                                    <columns>
+                                        <TableColumn fx:id="colNum" prefWidth="75.0" text="Num" />
+                                        <TableColumn fx:id="colDate" prefWidth="215.0" text="Date" />
+                                        <TableColumn fx:id="colTitle" prefWidth="131.0" text="Nom" />
+                                        <TableColumn fx:id="colMessage" prefWidth="358.0" text="Message" />
+                                    </columns>
+                                </TableView>
+                            </children>
                             <!-- Add your alerts content here -->
                         </VBox>
                     </content>
