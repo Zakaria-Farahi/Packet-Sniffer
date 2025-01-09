@@ -1,4 +1,4 @@
-package ma.enset.packetsniffer;
+package ma.enset.packetsniffer.attacks;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;

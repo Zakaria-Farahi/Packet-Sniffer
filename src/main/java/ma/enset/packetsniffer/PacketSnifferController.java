@@ -1,7 +1,6 @@
 package ma.enset.packetsniffer;
 
 import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
@@ -9,6 +8,10 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import ma.enset.packetsniffer.attacks.AlertHandler;
+import ma.enset.packetsniffer.attacks.Alerte;
+import ma.enset.packetsniffer.attacks.LargeFileTransfer;
+import ma.enset.packetsniffer.attacks.SynFlood;
 import org.pcap4j.core.PcapNetworkInterface;
 import org.pcap4j.packet.Packet;
 
@@ -106,6 +109,7 @@ public class PacketSnifferController {
     private int packetCounter = 0;
 
     private SynFlood synFloodDetector;
+    private LargeFileTransfer largeFileTransferDetector = new LargeFileTransfer(alertHandler);
 
     @FXML
     public void initialize() {
@@ -182,11 +186,12 @@ public class PacketSnifferController {
                 }
 
                 PacketData data = PacketData.fromPacket(++packetCounter, packet);
-                System.out.println(packetCounter  + ":\n" + packet);
+                //System.out.println(packetCounter  + ":\n" + packet);
                 packetList.add(data);
 
                 // Analyse du paquet et détection SYN Flood
                 synFloodDetector.filterAndAnalyze(packet);
+                largeFileTransferDetector.filterAndAnalyze(packet);
 
                 updateActiveUsers(packet);
             });

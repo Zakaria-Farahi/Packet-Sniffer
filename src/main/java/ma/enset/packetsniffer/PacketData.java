@@ -51,8 +51,8 @@ public class PacketData {
         }
         if (packet.get(ArpPacket.class) != null) {
             String srcIP = packet.get(ArpPacket.class).getHeader().getSrcProtocolAddr().getHostAddress();
-            String brodcast = packet.get(ArpPacket.class).getHeader().getDstProtocolAddr().getHostAddress();
-            return new PacketData(packetNumber, time, srcIP, brodcast, "ARP", packet.length(), "ARP packet");
+            String broadcast = packet.get(ArpPacket.class).getHeader().getDstProtocolAddr().getHostAddress();
+            return new PacketData(packetNumber, time, srcIP, broadcast, "ARP", packet.length(), "ARP packet");
         }
 
         if (packet.get(IpV6Packet.class) != null) {

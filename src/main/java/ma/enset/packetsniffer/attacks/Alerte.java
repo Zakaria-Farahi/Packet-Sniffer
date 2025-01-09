@@ -1,4 +1,4 @@
-package ma.enset.packetsniffer;
+package ma.enset.packetsniffer.attacks;
 
 public class Alerte {
     private final int num;

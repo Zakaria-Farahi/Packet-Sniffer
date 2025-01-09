@@ -1,7 +1,7 @@
 package ma.enset.packetsniffer;
 
-import ma.enset.packetsniffer.PacketCapture;
-import ma.enset.packetsniffer.SynFlood;
+import ma.enset.packetsniffer.attacks.AlertHandler;
+import ma.enset.packetsniffer.attacks.SynFlood;
 import org.pcap4j.core.PcapNetworkInterface;
 import org.pcap4j.core.PcapNativeException;
 import org.pcap4j.packet.Packet;

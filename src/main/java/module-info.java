@@ -6,4 +6,6 @@ module ma.enset.packetsniffer {
 
     opens ma.enset.packetsniffer to javafx.fxml;
     exports ma.enset.packetsniffer;
+    exports ma.enset.packetsniffer.attacks;
+    opens ma.enset.packetsniffer.attacks to javafx.fxml;
 }
