@@ -16,7 +16,7 @@ public class SynFlood {
     private final Map<String, Long> lastPacketTime = new HashMap<>();
     private final Set<String> alertedIps = new HashSet<>(); // Ensemble pour garder les IP déjà alertées
 
-    private static final int SYN_FLOOD_THRESHOLD = 50; // Seuil de détection
+    private static final int SYN_FLOOD_THRESHOLD = 10000; // Seuil de détection
     private static final long SYN_FLOOD_TIME_WINDOW = 1000; // Fenêtre de temps en millisecondes
 
     // Constructeur

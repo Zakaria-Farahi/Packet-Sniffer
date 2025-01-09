@@ -16,6 +16,7 @@ public class PortScanDetection {
     private final Map<String, Set<Integer>> scannedPortsByIp = new HashMap<>();
     private final Map<String, Long> lastPacketTime = new HashMap<>();
     private final Set<String> alertedIps = new HashSet<>();
+    private final Set<String> alertedTargets = new HashSet<>(); // Nouvel ensemble pour IP cibles alertées
 
     private static final int PORT_SCAN_THRESHOLD = 20; // Nombre de ports différents
     private static final long TIME_WINDOW = 3000; // Fenêtre de temps en millisecondes
@@ -33,6 +34,11 @@ public class PortScanDetection {
             String dstIp = ipv4Packet.getHeader().getDstAddr().getHostAddress();
             int dstPort = getDestinationPort(packet);
 
+            // Vérifier si l'IP source a déjà été ciblée
+            if (alertedTargets.contains(srcIp)) {
+                return; // Ignorer les alertes provenant d'IP déjà signalées comme cibles
+            }
+
             if (dstPort != -1) {
                 long currentTime = System.currentTimeMillis();
 
@@ -45,7 +51,8 @@ public class PortScanDetection {
                 if (scannedPortsByIp.get(srcIp).size() >= PORT_SCAN_THRESHOLD) {
                     if (!alertedIps.contains(srcIp)) {
                         triggerPortScanAlert(srcIp, dstIp, scannedPortsByIp.get(srcIp).size());
-                        alertedIps.add(srcIp); // Ajouter l'IP aux alertes déclenchées
+                        alertedIps.add(srcIp); // Ajouter l'IP source aux alertes déclenchées
+                        alertedTargets.add(dstIp); // Ajouter l'IP cible comme adresse surveillée
                     }
                     scannedPortsByIp.get(srcIp).clear(); // Réinitialiser les ports scannés
                 }
@@ -75,6 +82,7 @@ public class PortScanDetection {
 
         // Déclencher l'alerte via AlertHandler
         alertHandler.triggerAlert(alertTitle, alertMessage);
+        System.out.println("Alert detected: " + srcIp + " -> " + dstIp);
     }
 
     // Nettoyage des entrées expirées
