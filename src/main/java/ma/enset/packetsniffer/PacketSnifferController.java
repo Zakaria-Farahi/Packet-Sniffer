@@ -106,6 +106,7 @@ public class PacketSnifferController {
     private int packetCounter = 0;
 
     private SynFlood synFloodDetector;
+    private PortScanDetection scanPort;
 
     @FXML
     public void initialize() {
@@ -120,6 +121,7 @@ public class PacketSnifferController {
 
         // Initialisation de SynFlood
         synFloodDetector = new SynFlood(alertHandler);
+        scanPort=new PortScanDetection(alertHandler);
 
         // Configurer la table des paquets
         colNumber.setCellValueFactory(data -> {
@@ -187,7 +189,7 @@ public class PacketSnifferController {
 
                 // Analyse du paquet et détection SYN Flood
                 synFloodDetector.filterAndAnalyze(packet);
-
+                scanPort.filterAndAnalyze(packet);
                 updateActiveUsers(packet);
             });
         } catch (Exception e) {
