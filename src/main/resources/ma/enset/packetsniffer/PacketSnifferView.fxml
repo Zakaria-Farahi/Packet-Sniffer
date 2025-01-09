@@ -104,7 +104,7 @@
 
                                 <VBox spacing="10" VBox.vgrow="ALWAYS">
                                     <Label styleClass="chart-title" text="Statics about Traffic" />
-                           <PieChart />
+                                    <PieChart fx:id="trafficPieChart" VBox.vgrow="ALWAYS" />
                                 </VBox>
                             </children>
                         </VBox>

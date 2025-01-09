@@ -5,10 +5,7 @@ import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.chart.BarChart;
-import javafx.scene.chart.CategoryAxis;
-import javafx.scene.chart.NumberAxis;
-import javafx.scene.chart.XYChart;
+import javafx.scene.chart.*;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import ma.enset.packetsniffer.attacks.AlertHandler;
@@ -153,6 +150,11 @@ public class PacketSnifferController {
     private LargeFileTransfer largeFileTransferDetector;
 
     @FXML
+    private PieChart trafficPieChart;
+
+    private Map<String, Integer> trafficTypeCounts = new HashMap<>();
+
+    @FXML
     public void initialize() {
         try {
             // Charger les interfaces réseau
@@ -227,15 +229,21 @@ public class PacketSnifferController {
             packetCapture.startCapture(packet -> {
                 setStopButtonDisabled(false);
                 setStartButtonDisabled(true);
-                if(packet == null) {
+                if (packet == null) {
                     return;
                 }
 
                 PacketData data = PacketData.fromPacket(++packetCounter, packet);
-                //System.out.println(packetCounter  + ":\n" + packet);
                 packetList.add(data);
 
-                // Analyse du paquet et détection SYN Flood
+                // Analyze traffic type and update the pie chart
+                Platform.runLater(() -> {
+                    String trafficType = getTrafficType(data); // Method to determine traffic type
+                    trafficTypeCounts.put(trafficType, trafficTypeCounts.getOrDefault(trafficType, 0) + 1);
+                    updateTrafficPieChart();
+                });
+
+                // Additional analysis (e.g., SYN flood detection)
                 synFloodDetector.filterAndAnalyze(packet);
                 largeFileTransferDetector.filterAndAnalyze(packet);
 
@@ -301,5 +309,23 @@ public class PacketSnifferController {
             return new SimpleObjectProperty<>(null);
         }
     }
+
+    private String getTrafficType(PacketData data) {
+        if (data == null) {
+            return "unknown";
+        }
+
+        return data.protocolProperty().toString();
+    }
+
+    private void updateTrafficPieChart() {
+        ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList();
+        for (Map.Entry<String, Integer> entry : trafficTypeCounts.entrySet()) {
+            pieChartData.add(new PieChart.Data(entry.getKey(), entry.getValue()));
+        }
+        trafficPieChart.setData(pieChartData);
+    }
+
+
 
 }
