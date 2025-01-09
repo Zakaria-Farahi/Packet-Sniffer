@@ -1,5 +1,9 @@
 package ma.enset.packetsniffer;
 
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.Property;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -11,6 +15,7 @@ import org.pcap4j.packet.Packet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 public class PacketSnifferController {
 
@@ -117,12 +122,21 @@ public class PacketSnifferController {
         synFloodDetector = new SynFlood(alertHandler);
 
         // Configurer la table des paquets
-        colNumber.setCellValueFactory(data -> data.getValue().numberProperty().asObject());
-        colTime.setCellValueFactory(data -> data.getValue().timeProperty());
-        colSrcIP.setCellValueFactory(data -> data.getValue().srcIPProperty());
-        colDstIP.setCellValueFactory(data -> data.getValue().dstIPProperty());
-        colProtocol.setCellValueFactory(data -> data.getValue().protocolProperty());
-        colLength.setCellValueFactory(data -> data.getValue().lengthProperty().asObject());
+        colNumber.setCellValueFactory(data -> {
+            Property<Number> property = safeGetProperty(PacketData::numberProperty, data.getValue());
+            return property instanceof IntegerProperty ? ((IntegerProperty) property).asObject() : new SimpleObjectProperty<>(null);
+        });
+
+        colLength.setCellValueFactory(data -> {
+            Property<Number> property = safeGetProperty(PacketData::lengthProperty, data.getValue());
+            return property instanceof IntegerProperty ? ((IntegerProperty) property).asObject() : new SimpleObjectProperty<>(null);
+        });
+
+        colTime.setCellValueFactory(data -> safeGetProperty(PacketData::timeProperty, data.getValue()));
+        colSrcIP.setCellValueFactory(data -> safeGetProperty(PacketData::srcIPProperty, data.getValue()));
+        colDstIP.setCellValueFactory(data -> safeGetProperty(PacketData::dstIPProperty, data.getValue()));
+        colProtocol.setCellValueFactory(data -> safeGetProperty(PacketData::protocolProperty, data.getValue()));
+
 
         packetTableView.setItems(packetList);
 
@@ -232,4 +246,13 @@ public class PacketSnifferController {
 
         System.out.println("Blocking user with MAC: " + macAddress);
     }
+
+    private <T> Property<T> safeGetProperty(Function<PacketData, Property<T>> propertyGetter, PacketData data) {
+        if (data != null) {
+            return propertyGetter.apply(data);
+        } else {
+            return new SimpleObjectProperty<>(null);
+        }
+    }
+
 }

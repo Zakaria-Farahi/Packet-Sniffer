@@ -14,6 +14,8 @@ public class PacketCapture {
     private PcapHandle handle;
     private PcapNetworkInterface selectedInterface;
     private final List<Packet> allPackets = new ArrayList<>();
+    private Thread captureThread; // Keep a reference to the capture thread
+
 
     // Fetch all available network interfaces
     public List<PcapNetworkInterface> getAllInterfaces() throws PcapNativeException {
@@ -42,7 +44,7 @@ public class PacketCapture {
             LOGGER.info("Started capturing on interface: " + selectedInterface.getName());
 
             // Start a new thread for packet capture
-            new Thread(() -> {
+            captureThread = new Thread(() -> {
                 try {
                     while (!Thread.currentThread().isInterrupted()) {
                         Packet packet = handle.getNextPacket();
@@ -56,17 +58,28 @@ public class PacketCapture {
                 } catch (NotOpenException e) {
                     LOGGER.log(Level.SEVERE, "Packet handle not open.", e);
                 }
-            }).start();
+            });
+
+            captureThread.start();
         } catch (PcapNativeException e) {
             LOGGER.log(Level.SEVERE, "Error opening interface: " + selectedInterface.getName(), e);
             throw e;
         }
     }
 
-    // Stop capturing packets
     public void stopCapture() {
+        if (captureThread != null && captureThread.isAlive()) {
+            captureThread.interrupt(); // Interrupt the capture thread
+            try {
+                captureThread.join(); // Wait for the thread to finish
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt(); // Restore the interrupted status
+                LOGGER.log(Level.WARNING, "Interrupted while waiting for capture thread to stop.", e);
+            }
+        }
+
         if (handle != null && handle.isOpen()) {
-            handle.close();
+            handle.close(); // Safely close the handle
             LOGGER.info("Packet capture stopped.");
         }
     }
