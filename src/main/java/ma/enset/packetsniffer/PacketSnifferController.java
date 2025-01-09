@@ -130,8 +130,8 @@ public class PacketSnifferController {
         return isStartButtonDisabled.get();
     }
 
-    public BooleanProperty getIsStopButtonDisabled() {
-        return isStopButtonDisabled;
+    public boolean getIsStopButtonDisabled() {
+        return isStopButtonDisabled.get();
     }
 
     public void setStartButtonDisabled(boolean value) {
@@ -225,6 +225,8 @@ public class PacketSnifferController {
 
         try {
             packetCapture.startCapture(packet -> {
+                setStopButtonDisabled(false);
+                setStartButtonDisabled(true);
                 if(packet == null) {
                     return;
                 }

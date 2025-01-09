@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.chart.BarChart?>
-<?import javafx.scene.chart.CategoryAxis?>
-<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.chart.PieChart?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
@@ -18,10 +16,10 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
-<?import javafx.scene.layout.StackPane?>
 <VBox xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ma.enset.packetsniffer.PacketSnifferController">
     <children>
         <TabPane fx:id="mainTabPane" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
@@ -31,68 +29,63 @@
                     <content>
                         <VBox spacing="20" VBox.vgrow="ALWAYS">
                             <padding>
-                                <Insets bottom="20" left="20" right="20" top="20"/>
+                                <Insets bottom="20" left="20" right="20" top="20" />
                             </padding>
                             <children>
                                 <GridPane VBox.vgrow="SOMETIMES">
                                     <columnConstraints>
-                                        <ColumnConstraints hgrow="ALWAYS" percentWidth="50"/>
-                                        <ColumnConstraints hgrow="ALWAYS" percentWidth="50"/>
+                                        <ColumnConstraints hgrow="ALWAYS" percentWidth="50" />
+                                        <ColumnConstraints hgrow="ALWAYS" percentWidth="50" />
                                     </columnConstraints>
                                     <rowConstraints>
-                                        <RowConstraints minHeight="300.0" prefHeight="300.0" vgrow="SOMETIMES"/>
+                                        <RowConstraints minHeight="300.0" prefHeight="300.0" vgrow="SOMETIMES" />
                                     </rowConstraints>
                                     <children>
                                         <GridPane hgap="10" vgap="10">
                                             <columnConstraints>
-                                                <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" percentWidth="50"/>
-                                                <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" percentWidth="50"/>
+                                                <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" percentWidth="50" />
+                                                <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" percentWidth="50" />
                                             </columnConstraints>
                                             <rowConstraints>
-                                                <RowConstraints valignment="CENTER" vgrow="ALWAYS" percentHeight="50"/>
-                                                <RowConstraints valignment="CENTER" vgrow="ALWAYS" percentHeight="50"/>
+                                                <RowConstraints percentHeight="50" valignment="CENTER" vgrow="ALWAYS" />
+                                                <RowConstraints percentHeight="50" valignment="CENTER" vgrow="ALWAYS" />
                                             </rowConstraints>
                                             <children>
-                                                <Button fx:id="alertsButton" maxWidth="150" maxHeight="150" minWidth="120" minHeight="120"
-                                                        styleClass="dashboard-button" onAction="#goToAlertsTab">
+                                                <Button fx:id="alertsButton" maxHeight="150" maxWidth="150" minHeight="120" minWidth="120" onAction="#goToAlertsTab" styleClass="dashboard-button" GridPane.halignment="RIGHT" GridPane.valignment="BOTTOM">
                                                     <graphic>
                                                         <VBox alignment="CENTER" spacing="10">
                                                             <ImageView fitHeight="40.0" fitWidth="40.0" preserveRatio="true">
                                                                 <image>
-                                                                    <Image url="@assets/warning.png"/>
+                                                                    <Image url="@assets/warning.png" />
                                                                 </image>
                                                             </ImageView>
-                                                            <Text text="Go To Alerts"/>
+                                                            <Text text="Go To Alerts" />
                                                         </VBox>
                                                     </graphic>
                                                 </Button>
 
-                                                <Button fx:id="snifferButton" maxWidth="150" maxHeight="150" minWidth="120" minHeight="120"
-                                                        styleClass="dashboard-button" onAction="#goToSnifferTab"
-                                                        GridPane.columnIndex="1">
+                                                <Button fx:id="snifferButton" maxHeight="150" maxWidth="150" minHeight="120" minWidth="120" onAction="#goToSnifferTab" styleClass="dashboard-button" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.valignment="BOTTOM">
                                                     <graphic>
                                                         <VBox alignment="CENTER" spacing="10">
                                                             <ImageView fitHeight="40.0" fitWidth="40.0" preserveRatio="true">
                                                                 <image>
-                                                                    <Image url="@assets/organ.png"/>
+                                                                    <Image url="@assets/organ.png" />
                                                                 </image>
                                                             </ImageView>
-                                                            <Text text="Go To Sniffer"/>
+                                                            <Text text="Go To Sniffer" />
                                                         </VBox>
                                                     </graphic>
                                                 </Button>
 
-                                                <Button fx:id="activeUsersButton" maxWidth="150" maxHeight="150" minWidth="120" minHeight="120"
-                                                        styleClass="dashboard-button" onAction="#goToUsersTab"
-                                                        GridPane.rowIndex="1">
+                                                <Button fx:id="activeUsersButton" maxHeight="150" maxWidth="150" minHeight="120" minWidth="120" onAction="#goToUsersTab" styleClass="dashboard-button" GridPane.halignment="RIGHT" GridPane.rowIndex="1" GridPane.valignment="TOP">
                                                     <graphic>
                                                         <VBox alignment="CENTER" spacing="10">
                                                             <ImageView fitHeight="40.0" fitWidth="40.0" preserveRatio="true">
                                                                 <image>
-                                                                    <Image url="@assets/multiple-users-silhouette.png"/>
+                                                                    <Image url="@assets/multiple-users-silhouette.png" />
                                                                 </image>
                                                             </ImageView>
-                                                            <Text text="Go To Active Users"/>
+                                                            <Text text="Go To Active Users" />
                                                         </VBox>
                                                     </graphic>
                                                 </Button>
@@ -102,7 +95,7 @@
                                         <StackPane alignment="CENTER" GridPane.columnIndex="1">
                                             <ImageView fitHeight="280.0" fitWidth="280.0" preserveRatio="true">
                                                 <image>
-                                                    <Image url="@assets/NIDS.png"/>
+                                                    <Image url="@assets/NIDS.png" />
                                                 </image>
                                             </ImageView>
                                         </StackPane>
@@ -110,16 +103,8 @@
                                 </GridPane>
 
                                 <VBox spacing="10" VBox.vgrow="ALWAYS">
-                                    <Label text="Number of alerts for the last 30 Days"
-                                           styleClass="chart-title"/>
-                                    <BarChart fx:id="alertsBarChart" VBox.vgrow="ALWAYS" animated="true" title="Alerts Chart">
-                                        <xAxis>
-                                            <CategoryAxis side="BOTTOM" fx:id="xAxis" label="Days" />
-                                        </xAxis>
-                                        <yAxis>
-                                            <NumberAxis side="LEFT" fx:id="yAxis" label="Number of Alerts" />
-                                        </yAxis>
-                                    </BarChart>
+                                    <Label styleClass="chart-title" text="Statics about Traffic" />
+                           <PieChart />
                                 </VBox>
                             </children>
                         </VBox>
@@ -135,7 +120,7 @@
                             <HBox alignment="CENTER_LEFT" spacing="10">
                                 <Label text="Select Interface" />
                                 <ChoiceBox fx:id="interfaceChoiceBox" maxWidth="Infinity" HBox.hgrow="ALWAYS" />
-                                <Button fx:id="startButton" disable="${isStartButtonDisabled}" onAction="#startCapture" text="Start" />
+                                <Button fx:id="startButton" disable="${isStopButtonDisabled}" onAction="#startCapture" text="Start" />
                                 <Button fx:id="stopButton" disable="${isStartButtonDisabled}" onAction="#stopCapture" text="Stop" />
                             </HBox>
                             <HBox alignment="CENTER_LEFT" spacing="10">
