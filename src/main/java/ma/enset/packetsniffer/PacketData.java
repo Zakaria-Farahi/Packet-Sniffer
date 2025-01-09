@@ -3,7 +3,9 @@ package ma.enset.packetsniffer;
 
 import javafx.beans.property.*;
 
+import org.pcap4j.packet.ArpPacket;
 import org.pcap4j.packet.IpV4Packet;
+import org.pcap4j.packet.IpV6Packet;
 import org.pcap4j.packet.Packet;
 
 import java.text.SimpleDateFormat;
@@ -37,18 +39,31 @@ public class PacketData {
         // Parse packet data (example: this will vary based on packet library's API)
         String time = new SimpleDateFormat("HH:mm:ss.SSS").format(new Date());
         IpV4Packet ipV4Packet = packet.get(IpV4Packet.class);
-        if (ipV4Packet == null) {
-            // Return null or handle non-IPv4 packets if needed
-            return null;
-        }
-        String srcIP = ipV4Packet.getHeader().getSrcAddr().getHostAddress();  // Extract source IP
-        String dstIP = ipV4Packet.getHeader().getDstAddr().getHostAddress();  // Extract destination IP
-        String protocol = ipV4Packet.getHeader().getProtocol().name();  // Extract protocol
-        int length = packet.length();
-        String info = packet.toString();  // Extract additional information
+        if (ipV4Packet != null) {
+            String srcIP = ipV4Packet.getHeader().getSrcAddr().getHostAddress();  // Extract source IP
+            String dstIP = ipV4Packet.getHeader().getDstAddr().getHostAddress();  // Extract destination IP
+            String protocol = ipV4Packet.getHeader().getProtocol().name();  // Extract protocol
+            int length = packet.length();
+            String info = packet.toString();  // Extract additional information
 
-        // Customize extraction logic based on your requirements
-        return new PacketData(packetNumber, time, srcIP, dstIP, protocol, length, info);
+            // Customize extraction logic based on your requirements
+            return new PacketData(packetNumber, time, srcIP, dstIP, protocol, length, info);
+        }
+        if (packet.get(ArpPacket.class) != null) {
+            String srcIP = packet.get(ArpPacket.class).getHeader().getSrcProtocolAddr().getHostAddress();
+            String brodcast = packet.get(ArpPacket.class).getHeader().getDstProtocolAddr().getHostAddress();
+            return new PacketData(packetNumber, time, srcIP, brodcast, "ARP", packet.length(), "ARP packet");
+        }
+
+        if (packet.get(IpV6Packet.class) != null) {
+            // Handle IPv6 packets
+            IpV6Packet ipv6Packet = packet.get(IpV6Packet.class);
+            return new PacketData(packetNumber, time, ipv6Packet.getHeader().getSrcAddr().toString(),
+                    ipv6Packet.getHeader().getDstAddr().toString(),
+                    "IPv6", packet.length(), "IPv6 packet");
+        }
+
+        return null;
     }
 
     public IntegerProperty numberProperty() {

@@ -38,7 +38,7 @@ public class PacketCapture {
             handle = selectedInterface.openLive(
                     65536, // Snapshot length
                     PcapNetworkInterface.PromiscuousMode.PROMISCUOUS, // Promiscuous mode
-                    100 // Timeout in milliseconds
+                    10 // Timeout in milliseconds
             );
 
             LOGGER.info("Started capturing on interface: " + selectedInterface.getName());

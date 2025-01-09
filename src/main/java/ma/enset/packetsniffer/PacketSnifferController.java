@@ -177,7 +177,12 @@ public class PacketSnifferController {
 
         try {
             packetCapture.startCapture(packet -> {
+                if(packet == null) {
+                    return;
+                }
+
                 PacketData data = PacketData.fromPacket(++packetCounter, packet);
+                System.out.println(packetCounter  + ":\n" + packet);
                 packetList.add(data);
 
                 // Analyse du paquet et détection SYN Flood
@@ -234,19 +239,6 @@ public class PacketSnifferController {
         return "00:00:00:00:00:00";
     }
 
-    private void blockUser(String macAddress) {
-        if (macAddress == null || macAddress.isEmpty()) {
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Invalid MAC Address.");
-            alert.showAndWait();
-            return;
-        }
-
-        // Logique simulée de blocage
-        Alert alert = new Alert(Alert.AlertType.INFORMATION, "User with MAC Address " + macAddress + " has been blocked.");
-        alert.showAndWait();
-
-        System.out.println("Blocking user with MAC: " + macAddress);
-    }
 
     private <T> Property<T> safeGetProperty(Function<PacketData, Property<T>> propertyGetter, PacketData data) {
         if (data != null) {
