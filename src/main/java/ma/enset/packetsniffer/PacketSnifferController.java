@@ -153,6 +153,7 @@ public class PacketSnifferController {
     private PieChart trafficPieChart;
 
     private Map<String, Integer> trafficTypeCounts = new HashMap<>();
+    private PortScanDetection scanPort;
 
     @FXML
     public void initialize() {
@@ -168,6 +169,7 @@ public class PacketSnifferController {
         // Initialisation de SynFlood
         synFloodDetector = new SynFlood(alertHandler);
         largeFileTransferDetector = new LargeFileTransfer(alertHandler);
+        scanPort=new PortScanDetection(alertHandler);
 
         // Configurer la table des paquets
         colNumber.setCellValueFactory(data -> {
@@ -245,6 +247,7 @@ public class PacketSnifferController {
 
                 // Additional analysis (e.g., SYN flood detection)
                 synFloodDetector.filterAndAnalyze(packet);
+                scanPort.filterAndAnalyze(packet);
                 largeFileTransferDetector.filterAndAnalyze(packet);
 
                 updateActiveUsers(packet);
