@@ -8,14 +8,10 @@ import javafx.fxml.FXML;
 import javafx.scene.chart.*;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import ma.enset.packetsniffer.attacks.AlertHandler;
-import ma.enset.packetsniffer.attacks.Alerte;
-import ma.enset.packetsniffer.attacks.LargeFileTransfer;
-import ma.enset.packetsniffer.attacks.SynFlood;
+import ma.enset.packetsniffer.attacks.*;
 import org.pcap4j.core.PcapNetworkInterface;
 import org.pcap4j.packet.Packet;
 
-import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -169,7 +165,7 @@ public class PacketSnifferController {
         // Initialisation de SynFlood
         synFloodDetector = new SynFlood(alertHandler);
         largeFileTransferDetector = new LargeFileTransfer(alertHandler);
-        scanPort=new PortScanDetection(alertHandler);
+        scanPort= new PortScanDetection(alertHandler);
 
         // Configurer la table des paquets
         colNumber.setCellValueFactory(data -> {

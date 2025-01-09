@@ -1,4 +1,4 @@
-package ma.enset.packetsniffer;
+package ma.enset.packetsniffer.attacks;
 
 import org.pcap4j.packet.IpV4Packet;
 import org.pcap4j.packet.Packet;
