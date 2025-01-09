@@ -1,11 +1,14 @@
 package ma.enset.packetsniffer;
 
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.Property;
-import javafx.beans.property.SimpleObjectProperty;
+import javafx.application.Platform;
+import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.chart.BarChart;
+import javafx.scene.chart.CategoryAxis;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import ma.enset.packetsniffer.attacks.AlertHandler;
@@ -15,6 +18,7 @@ import ma.enset.packetsniffer.attacks.SynFlood;
 import org.pcap4j.core.PcapNetworkInterface;
 import org.pcap4j.packet.Packet;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -72,12 +76,6 @@ public class PacketSnifferController {
     private Button alertsButton;
 
     @FXML
-    private Button snifferButton;
-
-    @FXML
-    private Button activeUsersButton;
-
-    @FXML
     private Tab alertsTab;
 
     @FXML
@@ -85,6 +83,29 @@ public class PacketSnifferController {
 
     @FXML
     private Tab activeUsersTab;
+
+    @FXML
+    public void goToAlertsTab() {
+        mainTabPane.getSelectionModel().select(alertsTab); // Switch to the "Alerts" tab.
+    }
+
+    @FXML
+    private Button snifferButton;
+
+    @FXML
+    public void goToSnifferTab() {
+        mainTabPane.getSelectionModel().select(snifferTab); // Switch to the "Alerts" tab.
+    }
+
+    @FXML
+    private Button activeUsersButton;
+
+    @FXML
+    public void goToUsersTab() {
+        mainTabPane.getSelectionModel().select(activeUsersTab); // Switch to the "Alerts" tab.
+    }
+
+
 
     @FXML
     private TableView<Alerte> alertTable;
@@ -101,6 +122,26 @@ public class PacketSnifferController {
     @FXML
     private TableColumn<Alerte, String> colMessage;
 
+    private BooleanProperty isStartButtonDisabled = new SimpleBooleanProperty(false);
+    private BooleanProperty isStopButtonDisabled = new SimpleBooleanProperty(true);;
+
+
+    public boolean isStartButtonDisabled() {
+        return isStartButtonDisabled.get();
+    }
+
+    public BooleanProperty getIsStopButtonDisabled() {
+        return isStopButtonDisabled;
+    }
+
+    public void setStartButtonDisabled(boolean value) {
+        isStartButtonDisabled.set(value);
+    }
+
+    public void setStopButtonDisabled(boolean value) {
+        isStopButtonDisabled.set(value);
+    }
+
     private final AlertHandler alertHandler = new AlertHandler();
     private final PacketCapture packetCapture = new PacketCapture();
     private final ObservableList<PacketData> packetList = FXCollections.observableArrayList();
@@ -109,7 +150,7 @@ public class PacketSnifferController {
     private int packetCounter = 0;
 
     private SynFlood synFloodDetector;
-    private LargeFileTransfer largeFileTransferDetector = new LargeFileTransfer(alertHandler);
+    private LargeFileTransfer largeFileTransferDetector;
 
     @FXML
     public void initialize() {
@@ -124,6 +165,7 @@ public class PacketSnifferController {
 
         // Initialisation de SynFlood
         synFloodDetector = new SynFlood(alertHandler);
+        largeFileTransferDetector = new LargeFileTransfer(alertHandler);
 
         // Configurer la table des paquets
         colNumber.setCellValueFactory(data -> {
@@ -155,6 +197,8 @@ public class PacketSnifferController {
         colTitle.setCellValueFactory(new PropertyValueFactory<>("title"));
         colMessage.setCellValueFactory(new PropertyValueFactory<>("message"));
 
+        stopButton.disableProperty().bind(isStartButtonDisabled.not());
+        startButton.disableProperty().bind(isStartButtonDisabled);
         // Lier les données des alertes
         alertTable.setItems(alertHandler.getAlertList());
 
@@ -204,6 +248,9 @@ public class PacketSnifferController {
     @FXML
     private void stopCapture() {
         packetCapture.stopCapture();
+        setStartButtonDisabled(false);
+        setStopButtonDisabled(true);
+
     }
 
     @FXML

@@ -1,109 +1,159 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.chart.*?>
-<?import javafx.scene.image.*?>
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
-<VBox prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="ma.enset.packetsniffer.PacketSnifferController">
+<?import javafx.scene.layout.StackPane?>
+<VBox xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ma.enset.packetsniffer.PacketSnifferController">
     <children>
-        <TabPane fx:id="mainTabPane" VBox.vgrow="ALWAYS" tabClosingPolicy="UNAVAILABLE">
+        <TabPane fx:id="mainTabPane" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
             <tabs>
                 <!-- Dashboard Tab -->
                 <Tab text="Dashboard">
                     <content>
-                        <VBox spacing="20">
+                        <VBox spacing="20" VBox.vgrow="ALWAYS">
                             <padding>
-                                <Insets top="20" right="20" bottom="20" left="20"/>
+                                <Insets bottom="20" left="20" right="20" top="20"/>
                             </padding>
-                            <HBox spacing="20" alignment="CENTER_LEFT">
-                                <!-- Quick Access Buttons -->
-                                <Button fx:id="alertsButton" styleClass="dashboard-button" alignment="CENTER">
-                                    <graphic>
-                                        <VBox alignment="CENTER" spacing="5">
-                                            <ImageView fitHeight="34.0" fitWidth="34.0" preserveRatio="true">
-                                                <image>
-                                                    <Image url="@assets/warning.png"/>
-                                                </image>
-                                            </ImageView>
-                                            <Text text="Go To Alerts"/>
-                                        </VBox>
-                                    </graphic>
-                                </Button>
-                                <Button fx:id="snifferButton" styleClass="dashboard-button" alignment="CENTER">
-                                    <graphic>
-                                        <VBox alignment="CENTER" spacing="5">
-                                            <ImageView fitHeight="34.0" fitWidth="34.0" preserveRatio="true">
-                                                <image>
-                                                    <Image url="@assets/organ.png"/>
-                                                </image>
-                                            </ImageView>
-                                            <Text text="Go To Sniffer"/>
-                                        </VBox>
-                                    </graphic>
-                                </Button>
-                                <Button fx:id="activeUsersButton" styleClass="dashboard-button" alignment="CENTER">
-                                    <graphic>
-                                        <VBox alignment="CENTER" spacing="5">
-                                            <ImageView fitHeight="34.0" fitWidth="34.0" preserveRatio="true">
-                                                <image>
-                                                    <Image url="@assets/multiple-users-silhouette.png"/>
-                                                </image>
-                                            </ImageView>
-                                            <Text text="See Active Users"/>
-                                        </VBox>
-                                    </graphic>
-                                </Button>
-                            </HBox>
+                            <children>
+                                <GridPane VBox.vgrow="SOMETIMES">
+                                    <columnConstraints>
+                                        <ColumnConstraints hgrow="ALWAYS" percentWidth="50"/>
+                                        <ColumnConstraints hgrow="ALWAYS" percentWidth="50"/>
+                                    </columnConstraints>
+                                    <rowConstraints>
+                                        <RowConstraints minHeight="300.0" prefHeight="300.0" vgrow="SOMETIMES"/>
+                                    </rowConstraints>
+                                    <children>
+                                        <GridPane hgap="10" vgap="10">
+                                            <columnConstraints>
+                                                <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" percentWidth="50"/>
+                                                <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" percentWidth="50"/>
+                                            </columnConstraints>
+                                            <rowConstraints>
+                                                <RowConstraints valignment="CENTER" vgrow="ALWAYS" percentHeight="50"/>
+                                                <RowConstraints valignment="CENTER" vgrow="ALWAYS" percentHeight="50"/>
+                                            </rowConstraints>
+                                            <children>
+                                                <Button fx:id="alertsButton" maxWidth="150" maxHeight="150" minWidth="120" minHeight="120"
+                                                        styleClass="dashboard-button" onAction="#goToAlertsTab">
+                                                    <graphic>
+                                                        <VBox alignment="CENTER" spacing="10">
+                                                            <ImageView fitHeight="40.0" fitWidth="40.0" preserveRatio="true">
+                                                                <image>
+                                                                    <Image url="@assets/warning.png"/>
+                                                                </image>
+                                                            </ImageView>
+                                                            <Text text="Go To Alerts"/>
+                                                        </VBox>
+                                                    </graphic>
+                                                </Button>
 
-                            <VBox spacing="10" VBox.vgrow="ALWAYS">
-                                <Label text="Number of malicious activity for the last 30 Days"
-                                       styleClass="chart-title"/>
-                                <StackedBarChart VBox.vgrow="ALWAYS">
-                                    <xAxis>
-                                        <CategoryAxis side="BOTTOM"/>
-                                    </xAxis>
-                                    <yAxis>
-                                        <NumberAxis side="LEFT"/>
-                                    </yAxis>
-                                </StackedBarChart>
-                            </VBox>
+                                                <Button fx:id="snifferButton" maxWidth="150" maxHeight="150" minWidth="120" minHeight="120"
+                                                        styleClass="dashboard-button" onAction="#goToSnifferTab"
+                                                        GridPane.columnIndex="1">
+                                                    <graphic>
+                                                        <VBox alignment="CENTER" spacing="10">
+                                                            <ImageView fitHeight="40.0" fitWidth="40.0" preserveRatio="true">
+                                                                <image>
+                                                                    <Image url="@assets/organ.png"/>
+                                                                </image>
+                                                            </ImageView>
+                                                            <Text text="Go To Sniffer"/>
+                                                        </VBox>
+                                                    </graphic>
+                                                </Button>
+
+                                                <Button fx:id="activeUsersButton" maxWidth="150" maxHeight="150" minWidth="120" minHeight="120"
+                                                        styleClass="dashboard-button" onAction="#goToUsersTab"
+                                                        GridPane.rowIndex="1">
+                                                    <graphic>
+                                                        <VBox alignment="CENTER" spacing="10">
+                                                            <ImageView fitHeight="40.0" fitWidth="40.0" preserveRatio="true">
+                                                                <image>
+                                                                    <Image url="@assets/multiple-users-silhouette.png"/>
+                                                                </image>
+                                                            </ImageView>
+                                                            <Text text="Go To Active Users"/>
+                                                        </VBox>
+                                                    </graphic>
+                                                </Button>
+                                            </children>
+                                        </GridPane>
+
+                                        <StackPane alignment="CENTER" GridPane.columnIndex="1">
+                                            <ImageView fitHeight="280.0" fitWidth="280.0" preserveRatio="true">
+                                                <image>
+                                                    <Image url="@assets/NIDS.png"/>
+                                                </image>
+                                            </ImageView>
+                                        </StackPane>
+                                    </children>
+                                </GridPane>
+
+                                <VBox spacing="10" VBox.vgrow="ALWAYS">
+                                    <Label text="Number of alerts for the last 30 Days"
+                                           styleClass="chart-title"/>
+                                    <BarChart fx:id="alertsBarChart" VBox.vgrow="ALWAYS" animated="true" title="Alerts Chart">
+                                        <xAxis>
+                                            <CategoryAxis side="BOTTOM" fx:id="xAxis" label="Days" />
+                                        </xAxis>
+                                        <yAxis>
+                                            <NumberAxis side="LEFT" fx:id="yAxis" label="Number of Alerts" />
+                                        </yAxis>
+                                    </BarChart>
+                                </VBox>
+                            </children>
                         </VBox>
                     </content>
                 </Tab>
-
                 <!-- Sniffer Tab -->
-                <Tab text="Sniffer">
+                <Tab fx:id="snifferTab" text="Sniffer">
                     <content>
                         <VBox spacing="10">
                             <padding>
-                                <Insets top="10" right="10" bottom="10" left="10"/>
+                                <Insets bottom="10" left="10" right="10" top="10" />
                             </padding>
-                            <HBox spacing="10" alignment="CENTER_LEFT">
-                                <Label text="Select Interface"/>
-                                <ChoiceBox fx:id="interfaceChoiceBox" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
-                                <Button fx:id="startButton" text="Start" onAction="#startCapture"/>
-                                <Button fx:id="stopButton" text="Stop" onAction="#stopCapture"/>
+                            <HBox alignment="CENTER_LEFT" spacing="10">
+                                <Label text="Select Interface" />
+                                <ChoiceBox fx:id="interfaceChoiceBox" maxWidth="Infinity" HBox.hgrow="ALWAYS" />
+                                <Button fx:id="startButton" disable="${isStartButtonDisabled}" onAction="#startCapture" text="Start" />
+                                <Button fx:id="stopButton" disable="${isStartButtonDisabled}" onAction="#stopCapture" text="Stop" />
                             </HBox>
-                            <HBox spacing="10" alignment="CENTER_LEFT">
-                                <Label text="Search"/>
-                                <TextField fx:id="searchField" HBox.hgrow="ALWAYS"/>
-                                <Button fx:id="searchButton" text="OK" onAction="#searchPackets"/>
+                            <HBox alignment="CENTER_LEFT" spacing="10">
+                                <Label text="Search" />
+                                <TextField fx:id="searchField" HBox.hgrow="ALWAYS" />
+                                <Button fx:id="searchButton" onAction="#searchPackets" text="OK" />
                             </HBox>
                             <TableView fx:id="packetTableView" VBox.vgrow="ALWAYS">
                                 <columns>
-                                    <TableColumn fx:id="colNumber" text="No." minWidth="50" maxWidth="70"/>
-                                    <TableColumn fx:id="colTime" text="Time" minWidth="100"/>
-                                    <TableColumn fx:id="colSrcIP" text="Source IP" minWidth="120"/>
-                                    <TableColumn fx:id="colDstIP" text="Destination IP" minWidth="120"/>
-                                    <TableColumn fx:id="colProtocol" text="Protocol" minWidth="80"/>
-                                    <TableColumn fx:id="colLength" text="Length" minWidth="70"/>
+                                    <TableColumn fx:id="colNumber" maxWidth="70" minWidth="50" text="No." />
+                                    <TableColumn fx:id="colTime" minWidth="100" text="Time" />
+                                    <TableColumn fx:id="colSrcIP" minWidth="120" text="Source IP" />
+                                    <TableColumn fx:id="colDstIP" minWidth="120" text="Destination IP" />
+                                    <TableColumn fx:id="colProtocol" minWidth="80" text="Protocol" />
+                                    <TableColumn fx:id="colLength" minWidth="70" text="Length" />
                                 </columns>
                                 <columnResizePolicy>
-                                    <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                                    <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                                 </columnResizePolicy>
                             </TableView>
                         </VBox>
@@ -111,48 +161,27 @@
                 </Tab>
 
                 <!-- Active Users Tab -->
-                <Tab text="Active Users">
+                <Tab fx:id="activeUsersTab" text="Active Users">
                     <content>
                         <VBox spacing="10">
                             <padding>
-                                <Insets top="10" right="10" bottom="10" left="10"/>
+                                <Insets bottom="10" left="10" right="10" top="10" />
                             </padding>
-                            <Accordion VBox.vgrow="ALWAYS">
-                                <panes>
-                                    <TitledPane text="Users" expanded="true">
-                                        <content>
-                                            <TableView fx:id="activeUserTableView" VBox.vgrow="ALWAYS">
-                                                <columns>
-                                                    <TableColumn fx:id="colMacAddress" text="Mac Address" prefWidth="300"/>
-                                                    <TableColumn fx:id="colIsActive" text="Is Active" prefWidth="150"/>
-                                                </columns>
-                                                <columnResizePolicy>
-                                                    <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
-                                                </columnResizePolicy>
-                                            </TableView>
-                                        </content>
-                                    </TitledPane>
-                                    <TitledPane text="Black List">
-                                        <content>
-                                            <TableView VBox.vgrow="ALWAYS">
-                                                <columns>
-                                                    <TableColumn text="Mac Address" prefWidth="400"/>
-                                                    <TableColumn text="UnBlock" prefWidth="200"/>
-                                                </columns>
-                                                <columnResizePolicy>
-                                                    <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
-                                                </columnResizePolicy>
-                                            </TableView>
-                                        </content>
-                                    </TitledPane>
-                                </panes>
-                            </Accordion>
+                                <TableView fx:id="activeUserTableView" VBox.vgrow="ALWAYS">
+                                    <columns>
+                                        <TableColumn fx:id="colMacAddress" prefWidth="300" text="Mac Address" />
+                                        <TableColumn fx:id="colIsActive" prefWidth="150" text="Is Active" />
+                                    </columns>
+                                    <columnResizePolicy>
+                                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                                    </columnResizePolicy>
+                                </TableView>
                         </VBox>
                     </content>
                 </Tab>
 
                 <!-- Alerts Tab -->
-                <Tab text="Alerts">
+                <Tab fx:id="alertsTab" text="Alerts">
                     <content>
                         <VBox spacing="10">
                             <padding>
