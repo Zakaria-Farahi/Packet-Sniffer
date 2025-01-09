@@ -202,10 +202,11 @@ public class PacketSnifferController {
         ObservableList<PacketData> filteredList = FXCollections.observableArrayList();
 
         for (PacketData packetData : packetList) {
-            if (packetData.contains(searchText)) {
+            if (packetData != null && packetData.contains(searchText)) { // Check if packetData is not null
                 filteredList.add(packetData);
             }
         }
+
         packetTableView.setItems(filteredList);
     }
 
