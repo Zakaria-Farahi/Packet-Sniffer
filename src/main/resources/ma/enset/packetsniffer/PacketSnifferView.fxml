@@ -159,12 +159,12 @@
                                 <Insets bottom="10" left="10" right="10" top="10" />
                             </padding>
                             <children>
-                                <TableView fx:id="alertTable" prefHeight="564.0" prefWidth="780.0">
+                                <TableView fx:id="alertTable" VBox.vgrow="ALWAYS">
                                     <columns>
-                                        <TableColumn fx:id="colNum" prefWidth="75.0" text="Num" />
-                                        <TableColumn fx:id="colDate" prefWidth="215.0" text="Date" />
-                                        <TableColumn fx:id="colTitle" prefWidth="131.0" text="Nom" />
-                                        <TableColumn fx:id="colMessage" prefWidth="358.0" text="Message" />
+                                        <TableColumn fx:id="colNum" minWidth="75.0" text="Num" />
+                                        <TableColumn fx:id="colDate" minWidth="215.0" text="Date" />
+                                        <TableColumn fx:id="colTitle" minWidth="358.0" text="Nom" />
+                                        <TableColumn fx:id="colMessage" minWidth="400" text="Message" />
                                     </columns>
                                 </TableView>
                             </children>
